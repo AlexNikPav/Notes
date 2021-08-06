@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="notes_array">
+        <item>Заголовок 1</item>
+        <item>Заголовок 2</item>
+        <item>Заголовок 3</item>
+        <item>Заголовок 4</item>
+        <item>Заголовок 5</item>
+    </string-array>
+
+    <string-array name="description_array">
+        <item>Описание 1</item>
+        <item>Описание 2</item>
+        <item>Описание 3</item>
+        <item>Описание 4</item>
+        <item>Описание 5</item>
+    </string-array>
+
+    <string-array name="date_array">
+
+    </string-array>
+</resources>
