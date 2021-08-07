@@ -45,7 +45,7 @@ public class NoteDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.fragment_note_detail, container, false);
         initView(layout);
-        
+
         initCalendarWidget();
         initListeners();
 
@@ -81,19 +81,16 @@ public class NoteDetailFragment extends Fragment {
         descTextView.setText(this.note.getDescription());
 
         dateTextView = layout.findViewById(R.id.date);
-
         mDatePicker = layout.findViewById(R.id.datePicker);
 
         buttonSetTimeNow = (Button) layout.findViewById(R.id.button_set_now);
+        setCurrentDateOnView(note.getDateTime());
     }
 
     private void setCurrentDateOnView(Calendar calendar) {
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
         SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
         dateTextView.setText(formatter.format(calendar.getTime()));
-        mDatePicker.init(year, month, day, null);
         note.setDateTime(calendar);
+        initCalendarWidget();
     }
 }

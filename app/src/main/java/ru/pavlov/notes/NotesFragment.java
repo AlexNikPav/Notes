@@ -65,7 +65,8 @@ public class NotesFragment extends Fragment {
 
     private void showNoteDetailByIndex(int index) {
         Calendar calendar = Calendar.getInstance();
-        currentNote = new Note(getResources().getStringArray(R.array.notes_array)[index],
+        currentNote = new Note(index,
+                getResources().getStringArray(R.array.notes_array)[index],
                 getResources().getStringArray(R.array.description_array)[index],
                 calendar);
 

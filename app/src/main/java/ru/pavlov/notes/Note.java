@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import java.util.Calendar;
 
 public class Note implements Parcelable {
+    private int id;
     private String title;
     private String description;
     private Long dateTime = null;
@@ -22,7 +23,8 @@ public class Note implements Parcelable {
         this.dateTime = calendar.getTime().getTime();
     }
 
-    public Note(String title, String description, Calendar dateTime) {
+    public Note(int id, String title, String description, Calendar dateTime) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.dateTime = dateTime.getTime().getTime();
@@ -59,6 +61,10 @@ public class Note implements Parcelable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getId() {
+        return id;
     }
 
     @Override
