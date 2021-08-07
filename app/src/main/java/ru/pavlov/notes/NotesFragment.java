@@ -1,5 +1,6 @@
 package ru.pavlov.notes;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 public class NotesFragment extends Fragment {
 
     private static final String KEY_NOTE = "note";
+    boolean isLandScape;
     private Note currentNote;
 
     public static NotesFragment newInstance() {
@@ -20,9 +22,14 @@ public class NotesFragment extends Fragment {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        isLandScape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         if (getArguments() != null) {
             currentNote = getArguments().getParcelable(KEY_NOTE);
         }
+        if (currentNote != null) {
+            showNoteDetail();
+        }
+
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -37,9 +44,11 @@ public class NotesFragment extends Fragment {
             textView.setTextSize(30);
             layout.addView(textView);
 
+            int finalI = i;
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    showNoteDetailByIndex(finalI);
                 }
             });
         }
@@ -50,5 +59,37 @@ public class NotesFragment extends Fragment {
     public void onSaveInstanceState(Bundle bundle) {
         super.onSaveInstanceState(bundle);
         bundle.putParcelable(KEY_NOTE, currentNote);
+    }
+
+    private void showNoteDetailByIndex(int index) {
+        currentNote = new Note(getResources().getStringArray(R.array.notes_array)[index],
+                getResources().getStringArray(R.array.description_array)[index]);
+
+        showNoteDetail();
+    }
+
+    private void showNoteDetail() {
+        if (isLandScape) {
+            showNoteDetailLand();
+        } else {
+            showNoteDetailPort();
+        }
+    }
+
+    private void showNoteDetailPort() {
+        requireActivity()
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.notes_container, NoteDetailFragment.newInstance(currentNote))
+                .addToBackStack("")
+                .commit();
+    }
+
+    private void showNoteDetailLand() {
+        requireActivity()
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.note_detail_container, NoteDetailFragment.newInstance(currentNote))
+                .commit();
     }
 }
