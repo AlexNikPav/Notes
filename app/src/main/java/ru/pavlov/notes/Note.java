@@ -3,13 +3,29 @@ package ru.pavlov.notes;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Calendar;
+
 public class Note implements Parcelable {
     private String title;
     private String description;
+    private Long dateTime = null;
 
-    public Note(String title, String description) {
+    public Calendar getDateTime() {
+        Calendar calendar = Calendar.getInstance();
+        if (dateTime != null) {
+            calendar.setTimeInMillis(dateTime);
+        }
+        return calendar;
+    }
+
+    public void setDateTime(Calendar calendar) {
+        this.dateTime = calendar.getTime().getTime();
+    }
+
+    public Note(String title, String description, Calendar dateTime) {
         this.title = title;
         this.description = description;
+        this.dateTime = dateTime.getTime().getTime();
     }
 
     protected Note(Parcel in) {

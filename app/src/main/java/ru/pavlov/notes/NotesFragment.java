@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Calendar;
+
 public class NotesFragment extends Fragment {
 
     private static final String KEY_NOTE = "note";
@@ -62,8 +64,10 @@ public class NotesFragment extends Fragment {
     }
 
     private void showNoteDetailByIndex(int index) {
+        Calendar calendar = Calendar.getInstance();
         currentNote = new Note(getResources().getStringArray(R.array.notes_array)[index],
-                getResources().getStringArray(R.array.description_array)[index]);
+                getResources().getStringArray(R.array.description_array)[index],
+                calendar);
 
         showNoteDetail();
     }
