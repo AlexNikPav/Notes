@@ -27,11 +27,12 @@ public class NotesFragment extends Fragment {
         isLandScape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         if (getArguments() != null) {
             currentNote = getArguments().getParcelable(KEY_NOTE);
+            if (currentNote != null) {
+                showNoteDetail();
+            }
+        } else if (isLandScape && getCurrentIndexNoteInActivity() != 0) {
+            showNoteDetailByIndex(getCurrentIndexNoteInActivity());
         }
-        if (currentNote != null) {
-            showNoteDetail();
-        }
-
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,8 +70,8 @@ public class NotesFragment extends Fragment {
                 getResources().getStringArray(R.array.notes_array)[index],
                 getResources().getStringArray(R.array.description_array)[index],
                 calendar);
-
         showNoteDetail();
+        setCurrentIndexNoteInActivity();
     }
 
     private void showNoteDetail() {
@@ -96,5 +97,15 @@ public class NotesFragment extends Fragment {
                 .beginTransaction()
                 .replace(R.id.note_detail_container, NoteDetailFragment.newInstance(currentNote))
                 .commit();
+    }
+
+    private void setCurrentIndexNoteInActivity() {
+        if (currentNote != null && currentNote instanceof Note) {
+            ((MainActivity) requireActivity()).setCurrentIndexNote(currentNote.getId());
+        }
+    }
+
+    private int getCurrentIndexNoteInActivity() {
+        return ((MainActivity) requireActivity()).getCurrentIndexNote();
     }
 }
