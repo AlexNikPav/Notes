@@ -1,5 +1,6 @@
 package ru.pavlov.notes;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -8,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -23,7 +23,6 @@ public class NoteDetailFragment extends Fragment {
     private Note note;
     private TextView titleTextView;
     private TextView descTextView;
-    private DatePicker mDatePicker;
     private TextView dateTextView;
     private Button buttonSetTimeNow;
 
@@ -46,7 +45,6 @@ public class NoteDetailFragment extends Fragment {
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.fragment_note_detail, container, false);
         initView(layout);
 
-        initCalendarWidget();
         initListeners();
 
         return layout;
@@ -54,21 +52,23 @@ public class NoteDetailFragment extends Fragment {
 
     private void initListeners() {
         buttonSetTimeNow.setOnClickListener(view -> {
-            Calendar calendar = Calendar.getInstance();
-            setCurrentDateOnView(calendar);
-        });
-    }
+            Calendar dateOfNote = note.getDateTime();
 
-    private void initCalendarWidget() {
-        Calendar dateOfNote = note.getDateTime();
-        mDatePicker.init(dateOfNote.get(Calendar.YEAR), dateOfNote.get(Calendar.MONTH),
-                dateOfNote.get(Calendar.DAY_OF_MONTH), (view, year, monthOfYear, dayOfMonth) -> {
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.set(Calendar.YEAR, year);
-                    calendar.set(Calendar.MONTH, monthOfYear);
-                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                    setCurrentDateOnView(calendar);
-                });
+            DatePickerDialog.OnDateSetListener dateSetListener = (view1, year, monthOfYear, dayOfMonth) -> {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, monthOfYear);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                setCurrentDateOnView(calendar);
+            };
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(requireActivity(),
+                    dateSetListener, dateOfNote.get(Calendar.YEAR), dateOfNote.get(Calendar.MONTH),
+                    dateOfNote.get(Calendar.DAY_OF_MONTH));
+
+
+            datePickerDialog.show();
+        });
     }
 
     private void initView(ViewGroup layout) {
@@ -81,7 +81,6 @@ public class NoteDetailFragment extends Fragment {
         descTextView.setText(this.note.getDescription());
 
         dateTextView = layout.findViewById(R.id.date);
-        mDatePicker = layout.findViewById(R.id.datePicker);
 
         buttonSetTimeNow = (Button) layout.findViewById(R.id.button_set_now);
         setCurrentDateOnView(note.getDateTime());
@@ -91,6 +90,5 @@ public class NoteDetailFragment extends Fragment {
         SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
         dateTextView.setText(formatter.format(calendar.getTime()));
         note.setDateTime(calendar);
-        initCalendarWidget();
     }
 }

@@ -28,10 +28,4 @@
         android:layout_marginTop="47dp"
         android:text="@string/button_set_now" />
 
-    <DatePicker
-        android:id="@+id/datePicker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/button_set_now" />
-
 </LinearLayout>
