@@ -27,13 +27,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-
         if (savedInstanceState != null) {
             setCurrentIndexNote(savedInstanceState.getInt(KEY_CURRENT_NOTE));
         }
-
-        Log.d(TAG_LOG, "onCreate: " + currentIndexNote);
-
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.notes_container, NotesFragment.newInstance())
@@ -46,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
         initDrawer(toolbar);
     }
 
-    // регистрация drawer
     private void initDrawer(Toolbar toolbar) {
         final DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -56,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Обработка навигационного меню
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -77,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
         return toolbar;
     }
 
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Обработка выбора пункта меню приложения (активити)
         int id = item.getItemId();
@@ -91,22 +84,17 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Здесь определяем меню приложения (активити)
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem search = menu.findItem(R.id.action_search); // поиск пункта меню поиска
         SearchView searchText = (SearchView) search.getActionView(); // строка поиска
         searchText.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            // реагирует на конец ввода поиска
-            @Override
+
             public boolean onQueryTextSubmit(String query) {
                 Toast.makeText(MainActivity.this, query, Toast.LENGTH_SHORT).show();
                 return true;
             }
 
-            // реагирует на нажатие каждой клавиши
-            @Override
             public boolean onQueryTextChange(String newText) {
                 return true;
             }
