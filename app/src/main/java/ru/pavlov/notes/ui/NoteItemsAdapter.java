@@ -35,7 +35,7 @@ public class NoteItemsAdapter extends RecyclerView.Adapter<NoteItemsAdapter.View
 
     @Override
     public void onBindViewHolder(NoteItemsAdapter.ViewHolder viewHolder, int i) {
-        viewHolder.setDate(dataSource.getCardData(i));
+        viewHolder.setData(dataSource.getCardData(i));
         Log.d(TAG, "onBindViewHolder");
     }
 
@@ -55,7 +55,7 @@ public class NoteItemsAdapter extends RecyclerView.Adapter<NoteItemsAdapter.View
 
         public ViewHolder(View itemView) {
             super(itemView);
-            initView(itemView);
+            this.initView(itemView);
             initListeners();
         }
 
@@ -75,7 +75,7 @@ public class NoteItemsAdapter extends RecyclerView.Adapter<NoteItemsAdapter.View
             date = itemView.findViewById(R.id.date);
         }
 
-        public void setDate(NoteData note) {
+        public void setData(NoteData note) {
             title.setText(note.getTitle());
             SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
             date.setText(formatter.format(note.getDateTime().getTime()));
