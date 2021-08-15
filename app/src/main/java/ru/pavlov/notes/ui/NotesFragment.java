@@ -1,22 +1,30 @@
-package ru.pavlov.notes;
+package ru.pavlov.notes.ui;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Calendar;
+
+import ru.pavlov.notes.MainActivity;
+import ru.pavlov.notes.R;
+import ru.pavlov.notes.data.CardsSource;
+import ru.pavlov.notes.data.CardsSourceImpl;
+import ru.pavlov.notes.data.NoteData;
 
 public class NotesFragment extends Fragment {
 
     private static final String KEY_NOTE = "note";
     boolean isLandScape;
-    private Note currentNote;
+    private NoteData currentNote;
 
     public static NotesFragment newInstance() {
         return new NotesFragment();
@@ -37,26 +45,25 @@ public class NotesFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.fragment_notes, container, false);
-
-        String[] notes = getResources().getStringArray(R.array.notes_array);
-
-        for (int i = 0; i < notes.length; i++) {
-            String name = notes[i];
-            TextView textView = new TextView(getContext());
-            textView.setText(name);
-            textView.setTextSize(30);
-            layout.addView(textView);
-
-            int finalI = i;
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showNoteDetailByIndex(finalI);
-                }
-            });
-        }
+        RecyclerView recyclerView = layout.findViewById(R.id.recycler_view_notes);
+        CardsSource data = new CardsSourceImpl(getResources()).init();
+        initRecyclerView(recyclerView, data);
 
         return layout;
+    }
+
+    private void initRecyclerView(RecyclerView recyclerView, CardsSource data) {
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        final NoteItemsAdapter adapter = new NoteItemsAdapter(data);
+        recyclerView.setAdapter(adapter);
+        adapter.SetOnItemClickListener(new NoteItemsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                showNoteDetailByIndex(position);
+            }
+        });
     }
 
     public void onSaveInstanceState(Bundle bundle) {
@@ -66,7 +73,7 @@ public class NotesFragment extends Fragment {
 
     private void showNoteDetailByIndex(int index) {
         Calendar calendar = Calendar.getInstance();
-        currentNote = new Note(index,
+        currentNote = new NoteData(index,
                 getResources().getStringArray(R.array.notes_array)[index],
                 getResources().getStringArray(R.array.description_array)[index],
                 calendar);
@@ -100,7 +107,7 @@ public class NotesFragment extends Fragment {
     }
 
     private void setCurrentIndexNoteInActivity() {
-        if (currentNote != null && currentNote instanceof Note) {
+        if (currentNote != null && currentNote instanceof NoteData) {
             ((MainActivity) requireActivity()).setCurrentIndexNote(currentNote.getId());
         }
     }
