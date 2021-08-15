@@ -45,42 +45,19 @@ public class NotesFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.fragment_notes, container, false);
-//        String[] notes = getResources().getStringArray(R.array.notes_array);
         RecyclerView recyclerView = layout.findViewById(R.id.recycler_view_notes);
-        // Получим источник данных для списка
         CardsSource data = new CardsSourceImpl(getResources()).init();
         initRecyclerView(recyclerView, data);
-
-//        for (int i = 0; i < notes.length; i++) {
-//            String name = notes[i];
-//            TextView textView = new TextView(getContext());
-//            textView.setText(name);
-//            textView.setTextSize(30);
-//            layout.addView(textView);
-//
-//            int finalI = i;
-//            textView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    showNoteDetailByIndex(finalI);
-//                }
-//            });
-//        }
 
         return layout;
     }
 
     private void initRecyclerView(RecyclerView recyclerView, CardsSource data) {
-        // Эта установка служит для повышения производительности системы
         recyclerView.setHasFixedSize(true);
-        // Будем работать со встроенным менеджером
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        // Установим адаптер
         final NoteItemsAdapter adapter = new NoteItemsAdapter(data);
         recyclerView.setAdapter(adapter);
-
-        // Установим слушателя
         adapter.SetOnItemClickListener(new NoteItemsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
