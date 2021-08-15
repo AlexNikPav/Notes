@@ -1,4 +1,4 @@
-package ru.pavlov.notes;
+package ru.pavlov.notes.ui;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -15,18 +15,21 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import ru.pavlov.notes.R;
+import ru.pavlov.notes.data.NoteData;
+
 public class NoteDetailFragment extends Fragment {
 
     private static final String KEY_NOTE = "note";
     private static final String DATE_FORMAT = "yyyy-MM-dd";
 
-    private Note note;
+    private NoteData note;
     private TextView titleTextView;
     private TextView descTextView;
     private TextView dateTextView;
     private Button buttonSetTimeNow;
 
-    public static NoteDetailFragment newInstance(Note note) {
+    public static NoteDetailFragment newInstance(NoteData note) {
         NoteDetailFragment fragment = new NoteDetailFragment();
         Bundle args = new Bundle();
         args.putParcelable(KEY_NOTE, note);

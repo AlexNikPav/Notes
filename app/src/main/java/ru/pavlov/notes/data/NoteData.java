@@ -1,11 +1,11 @@
-package ru.pavlov.notes;
+package ru.pavlov.notes.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Calendar;
 
-public class Note implements Parcelable {
+public class NoteData implements Parcelable {
     private int id;
     private String title;
     private String description;
@@ -23,27 +23,27 @@ public class Note implements Parcelable {
         this.dateTime = calendar.getTime().getTime();
     }
 
-    public Note(int id, String title, String description, Calendar dateTime) {
+    public NoteData(int id, String title, String description, Calendar dateTime) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.dateTime = dateTime.getTime().getTime();
     }
 
-    protected Note(Parcel in) {
+    protected NoteData(Parcel in) {
         title = in.readString();
         description = in.readString();
     }
 
-    public static final Creator<Note> CREATOR = new Creator<Note>() {
+    public static final Creator<NoteData> CREATOR = new Creator<NoteData>() {
         @Override
-        public Note createFromParcel(Parcel in) {
-            return new Note(in);
+        public NoteData createFromParcel(Parcel in) {
+            return new NoteData(in);
         }
 
         @Override
-        public Note[] newArray(int size) {
-            return new Note[size];
+        public NoteData[] newArray(int size) {
+            return new NoteData[size];
         }
     };
 
