@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
@@ -17,27 +16,25 @@ import ru.pavlov.notes.data.CardsSource;
 import ru.pavlov.notes.data.NoteData;
 
 public class NoteItemsAdapter extends RecyclerView.Adapter<NoteItemsAdapter.ViewHolder> {
-
     private static final String DATE_FORMAT = "yyyy-MM-dd";
     private final static String TAG = "NoteItemsAdapter";
     private CardsSource dataSource;
-    private OnItemClickListener itemClickListener;
+    private OnItemClickHandler itemClickHandler;
 
     public NoteItemsAdapter(CardsSource dataSource) {
         this.dataSource = dataSource;
     }
 
     @Override
-    public NoteItemsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public NoteItemsAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_note, viewGroup, false);
         Log.d(TAG, "onCreateViewHolder");
-        // Здесь можно установить всякие параметры
         return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull NoteItemsAdapter.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(NoteItemsAdapter.ViewHolder viewHolder, int i) {
         viewHolder.setDate(dataSource.getCardData(i));
         Log.d(TAG, "onBindViewHolder");
     }
@@ -47,12 +44,8 @@ public class NoteItemsAdapter extends RecyclerView.Adapter<NoteItemsAdapter.View
         return dataSource.size();
     }
 
-    public void SetOnItemClickListener(OnItemClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
+    public void setOnItemClickHandler(OnItemClickHandler itemClickListener) {
+        this.itemClickHandler = itemClickListener;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -60,18 +53,26 @@ public class NoteItemsAdapter extends RecyclerView.Adapter<NoteItemsAdapter.View
         private TextView title;
         private TextView date;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
-            title = itemView.findViewById(R.id.title);
-            date = itemView.findViewById(R.id.date);
+            initView(itemView);
+            initListeners();
+        }
+
+        private void initListeners() {
             title.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (itemClickListener != null) {
-                        itemClickListener.onItemClick(v, getAdapterPosition());
+                    if (itemClickHandler != null) {
+                        itemClickHandler.onItemClick(v, getAdapterPosition());
                     }
                 }
             });
+        }
+
+        private void initView(View itemView) {
+            title = itemView.findViewById(R.id.title);
+            date = itemView.findViewById(R.id.date);
         }
 
         public void setDate(NoteData note) {

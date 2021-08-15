@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -58,7 +57,7 @@ public class NotesFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         final NoteItemsAdapter adapter = new NoteItemsAdapter(data);
         recyclerView.setAdapter(adapter);
-        adapter.SetOnItemClickListener(new NoteItemsAdapter.OnItemClickListener() {
+        adapter.setOnItemClickHandler(new OnItemClickHandler() {
             @Override
             public void onItemClick(View view, int position) {
                 showNoteDetailByIndex(position);
