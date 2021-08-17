@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
+import ru.pavlov.notes.observe.Publisher;
 import ru.pavlov.notes.ui.NotesFragment;
 
 
@@ -22,20 +23,19 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG_LOG = "tag_log";
     private static final String KEY_CURRENT_NOTE = "key_current_note";
     private static int currentIndexNote = 0;
+    private Navigation navigation;
+    private Publisher publisher = new Publisher();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        navigation = new Navigation(getSupportFragmentManager());
         initView();
         if (savedInstanceState != null) {
             setCurrentIndexNote(savedInstanceState.getInt(KEY_CURRENT_NOTE));
         }
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.notes_container, NotesFragment.newInstance())
-                .commit();
-
+        navigation.addFragment(NotesFragment.newInstance(), false);
     }
 
     private void initView() {
@@ -118,4 +118,11 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.currentIndexNote = currentIndexNote;
     }
 
+    public Navigation getNavigation() {
+        return navigation;
+    }
+
+    public Publisher getPublisher() {
+        return publisher;
+    }
 }

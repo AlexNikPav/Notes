@@ -1,8 +1,10 @@
 package ru.pavlov.notes.ui;
 
+import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,16 +16,21 @@ import android.view.ViewGroup;
 import java.util.Calendar;
 
 import ru.pavlov.notes.MainActivity;
+import ru.pavlov.notes.Navigation;
 import ru.pavlov.notes.R;
 import ru.pavlov.notes.data.CardsSource;
 import ru.pavlov.notes.data.CardsSourceImpl;
 import ru.pavlov.notes.data.NoteData;
+import ru.pavlov.notes.observe.Observer;
+import ru.pavlov.notes.observe.Publisher;
 
 public class NotesFragment extends Fragment {
 
     private static final String KEY_NOTE = "note";
     boolean isLandScape;
     private NoteData currentNote;
+    private Navigation navigation;
+    private Publisher publisher;
 
     public static NotesFragment newInstance() {
         return new NotesFragment();
@@ -49,6 +56,14 @@ public class NotesFragment extends Fragment {
         initRecyclerView(recyclerView, data);
 
         return layout;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        MainActivity activity = (MainActivity) context;
+        navigation = activity.getNavigation();
+        publisher = activity.getPublisher();
     }
 
     private void initRecyclerView(RecyclerView recyclerView, CardsSource data) {
@@ -86,6 +101,14 @@ public class NotesFragment extends Fragment {
         } else {
             showNoteDetailPort();
         }
+        navigation.addFragment(CardFragment.newInstance(data.getCardData(position)), true);
+        publisher.subscribe(new Observer() {
+            @Override
+            public void updateCardData(NoteData cardData) {
+                data.updateCardData(position, cardData);
+                adapter.notifyItemChanged(position);
+            }
+        });
     }
 
     private void showNoteDetailPort() {
@@ -114,4 +137,12 @@ public class NotesFragment extends Fragment {
     private int getCurrentIndexNoteInActivity() {
         return ((MainActivity) requireActivity()).getCurrentIndexNote();
     }
+
+    @Override
+    public void onDetach() {
+        navigation = null;
+        publisher = null;
+        super.onDetach();
+    }
+
 }

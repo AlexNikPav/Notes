@@ -1,8 +1,10 @@
 package ru.pavlov.notes.ui;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -15,14 +17,18 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import ru.pavlov.notes.MainActivity;
+import ru.pavlov.notes.Navigation;
 import ru.pavlov.notes.R;
 import ru.pavlov.notes.data.NoteData;
+import ru.pavlov.notes.observe.Publisher;
 
 public class NoteDetailFragment extends Fragment {
 
     private static final String KEY_NOTE = "note";
     private static final String DATE_FORMAT = "yyyy-MM-dd";
 
+    private Publisher publisher;
     private NoteData note;
     private TextView titleTextView;
     private TextView descTextView;
@@ -47,10 +53,22 @@ public class NoteDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.fragment_note_detail, container, false);
         initView(layout);
-
         initListeners();
 
         return layout;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        MainActivity activity = (MainActivity) context;
+        publisher = activity.getPublisher();
+    }
+
+    @Override
+    public void onDetach() {
+        publisher = null;
+        super.onDetach();
     }
 
     private void initListeners() {
