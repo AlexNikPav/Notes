@@ -23,8 +23,10 @@ public class Publisher {
     public void notifySingle(NoteData noteData) {
         for (Observer observer : observers) {
             observer.updateCardData(noteData);
-            unsubscribe(observer);
         }
     }
 
+    public void clear() {
+        observers.clear();
+    }
 }

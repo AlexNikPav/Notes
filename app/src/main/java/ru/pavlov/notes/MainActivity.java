@@ -22,7 +22,6 @@ import ru.pavlov.notes.ui.NotesFragment;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG_LOG = "tag_log";
     private static final String KEY_CURRENT_NOTE = "key_current_note";
-    private static int currentIndexNote = 0;
     private Navigation navigation;
     private Publisher publisher = new Publisher();
 
@@ -32,10 +31,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         navigation = new Navigation(getSupportFragmentManager());
         initView();
-        if (savedInstanceState != null) {
-            setCurrentIndexNote(savedInstanceState.getInt(KEY_CURRENT_NOTE));
-        }
-        navigation.addFragment(NotesFragment.newInstance(), false);
+        navigation.addFragmentToMainArea(NotesFragment.newInstance(), false);
     }
 
     private void initView() {
@@ -107,15 +103,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void onSaveInstanceState(Bundle bundle) {
         super.onSaveInstanceState(bundle);
-        bundle.putInt(KEY_CURRENT_NOTE, getCurrentIndexNote());
-    }
-
-    public static int getCurrentIndexNote() {
-        return currentIndexNote;
-    }
-
-    public static void setCurrentIndexNote(int currentIndexNote) {
-        MainActivity.currentIndexNote = currentIndexNote;
     }
 
     public Navigation getNavigation() {

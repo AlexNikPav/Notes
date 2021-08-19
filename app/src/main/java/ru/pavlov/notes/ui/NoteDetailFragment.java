@@ -2,9 +2,10 @@ package ru.pavlov.notes.ui;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -13,12 +14,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.material.textfield.TextInputEditText;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
 import ru.pavlov.notes.MainActivity;
-import ru.pavlov.notes.Navigation;
 import ru.pavlov.notes.R;
 import ru.pavlov.notes.data.NoteData;
 import ru.pavlov.notes.observe.Publisher;
@@ -29,25 +31,35 @@ public class NoteDetailFragment extends Fragment {
     private static final String DATE_FORMAT = "yyyy-MM-dd";
 
     private Publisher publisher;
-    private NoteData note;
-    private TextView titleTextView;
-    private TextView descTextView;
+    private NoteData noteData;
+    private TextInputEditText titleTextInput;
+    private TextInputEditText descTextInput;
     private TextView dateTextView;
-    private Button buttonSetTimeNow;
+    private AppCompatButton buttonSetTimeNow;
+    private AppCompatButton buttonSaveNote;
+    private boolean isLandScape;
 
-    public static NoteDetailFragment newInstance(NoteData note) {
+    // Для добавления новых данных
+    public static NoteDetailFragment newInstance() {
+        NoteDetailFragment fragment = new NoteDetailFragment();
+        return fragment;
+    }
+
+    public static NoteDetailFragment newInstance(NoteData noteData) {
         NoteDetailFragment fragment = new NoteDetailFragment();
         Bundle args = new Bundle();
-        args.putParcelable(KEY_NOTE, note);
+        args.putParcelable(KEY_NOTE, noteData);
         fragment.setArguments(args);
         return fragment;
     }
 
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            note = getArguments().getParcelable(KEY_NOTE);
+            noteData = getArguments().getParcelable(KEY_NOTE);
         }
+        isLandScape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,14 +78,33 @@ public class NoteDetailFragment extends Fragment {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        collectCardData();
+    }
+
+    private void collectCardData() {
+        noteData.setTitle(this.titleTextInput.getText().toString());
+        noteData.setDescription(this.descTextInput.getText().toString());
+    }
+
+    @Override
     public void onDetach() {
         publisher = null;
         super.onDetach();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (!isLandScape) {
+            publisher.notifySingle(noteData);
+        }
+    }
+
     private void initListeners() {
         buttonSetTimeNow.setOnClickListener(view -> {
-            Calendar dateOfNote = note.getDateTime();
+            Calendar dateOfNote = noteData.getDateTime();
 
             DatePickerDialog.OnDateSetListener dateSetListener = (view1, year, monthOfYear, dayOfMonth) -> {
                 Calendar calendar = Calendar.getInstance();
@@ -90,26 +121,38 @@ public class NoteDetailFragment extends Fragment {
 
             datePickerDialog.show();
         });
+
+        if (isLandScape) {
+            buttonSaveNote.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    collectCardData();
+                    publisher.notifySingle(noteData);
+                }
+            });
+        }
     }
 
     private void initView(ViewGroup layout) {
-        titleTextView = layout.findViewById(R.id.title);
-        titleTextView.setTextSize(30);
-        titleTextView.setText(this.note.getTitle());
+        titleTextInput = layout.findViewById(R.id.inputTitle);
+        titleTextInput.setText(this.noteData.getTitle());
 
-        descTextView = layout.findViewById(R.id.description);
-        descTextView.setTextSize(30);
-        descTextView.setText(this.note.getDescription());
+        descTextInput = layout.findViewById(R.id.inputDescription);
+        descTextInput.setText(this.noteData.getDescription());
 
         dateTextView = layout.findViewById(R.id.date);
 
-        buttonSetTimeNow = (Button) layout.findViewById(R.id.button_set_now);
-        setCurrentDateOnView(note.getDateTime());
+        buttonSetTimeNow = layout.findViewById(R.id.button_set_now);
+        setCurrentDateOnView(noteData.getDateTime());
+
+        if (isLandScape) {
+            buttonSaveNote = layout.findViewById(R.id.button_save_note);
+        }
     }
 
     private void setCurrentDateOnView(Calendar calendar) {
         SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
         dateTextView.setText(formatter.format(calendar.getTime()));
-        note.setDateTime(calendar);
+        noteData.setDateTime(calendar);
     }
 }

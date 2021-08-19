@@ -12,16 +12,17 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import ru.pavlov.notes.R;
-import ru.pavlov.notes.data.CardsSource;
+import ru.pavlov.notes.data.NotesSource;
 import ru.pavlov.notes.data.NoteData;
 
 public class NoteItemsAdapter extends RecyclerView.Adapter<NoteItemsAdapter.ViewHolder> {
     private static final String DATE_FORMAT = "yyyy-MM-dd";
     private final static String TAG = "NoteItemsAdapter";
-    private CardsSource dataSource;
+    private NotesSource dataSource;
     private OnItemClickHandler itemClickHandler;
+    private int menuPosition;
 
-    public NoteItemsAdapter(CardsSource dataSource) {
+    public NoteItemsAdapter(NotesSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -35,7 +36,7 @@ public class NoteItemsAdapter extends RecyclerView.Adapter<NoteItemsAdapter.View
 
     @Override
     public void onBindViewHolder(NoteItemsAdapter.ViewHolder viewHolder, int i) {
-        viewHolder.setData(dataSource.getCardData(i));
+        viewHolder.setData(dataSource.getNoteData(i));
         Log.d(TAG, "onBindViewHolder");
     }
 
@@ -46,6 +47,10 @@ public class NoteItemsAdapter extends RecyclerView.Adapter<NoteItemsAdapter.View
 
     public void setOnItemClickHandler(OnItemClickHandler itemClickListener) {
         this.itemClickHandler = itemClickListener;
+    }
+
+    public int getMenuPosition() {
+        return menuPosition;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -65,6 +70,7 @@ public class NoteItemsAdapter extends RecyclerView.Adapter<NoteItemsAdapter.View
                 public void onClick(View v) {
                     if (itemClickHandler != null) {
                         itemClickHandler.onItemClick(v, getAdapterPosition());
+                        menuPosition = getLayoutPosition();
                     }
                 }
             });

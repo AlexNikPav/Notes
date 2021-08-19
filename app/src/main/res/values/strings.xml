@@ -24,4 +24,7 @@
     <string name="about_app">О приложении</string>
     <string name="sort">Sorting</string>
     <string name="delete">Delete</string>
+    <string name="hintTitle">Заголовок</string>
+    <string name="hintDesc">Описание</string>
+    <string name="button_save_note">Сохранить</string>
 </resources>

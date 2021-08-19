@@ -8,16 +8,16 @@ import java.util.List;
 
 import ru.pavlov.notes.R;
 
-public class CardsSourceImpl implements CardsSource {
+public class NotesSourceArray implements NotesSource {
     private List<NoteData> dataSource;
     private Resources resources;
 
-    public CardsSourceImpl(Resources resources) {
+    public NotesSourceArray(Resources resources) {
         dataSource = new ArrayList<>(7);
         this.resources = resources;
     }
 
-    public CardsSourceImpl init() {
+    public NotesSourceArray init() {
         String[] titles = resources.getStringArray(R.array.notes_array);
         String[] descriptions = resources.getStringArray(R.array.description_array);
         for (int i = 0; i < descriptions.length; i++) {
@@ -27,11 +27,31 @@ public class CardsSourceImpl implements CardsSource {
         return this;
     }
 
-    public NoteData getCardData(int position) {
+    public NoteData getNoteData(int position) {
         return dataSource.get(position);
     }
 
     public int size() {
         return dataSource.size();
+    }
+
+    @Override
+    public void deleteNoteData(int position) {
+        dataSource.remove(position);
+    }
+
+    @Override
+    public void updateNoteData(int position, NoteData cardData) {
+        dataSource.set(position, cardData);
+    }
+
+    @Override
+    public void addNoteData(NoteData cardData) {
+        dataSource.add(cardData);
+    }
+
+    @Override
+    public void clearNoteData() {
+        dataSource.clear();
     }
 }
