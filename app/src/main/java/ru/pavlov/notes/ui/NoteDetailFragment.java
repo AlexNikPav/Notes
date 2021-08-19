@@ -39,12 +39,6 @@ public class NoteDetailFragment extends Fragment {
     private AppCompatButton buttonSaveNote;
     private boolean isLandScape;
 
-    // Для добавления новых данных
-    public static NoteDetailFragment newInstance() {
-        NoteDetailFragment fragment = new NoteDetailFragment();
-        return fragment;
-    }
-
     public static NoteDetailFragment newInstance(NoteData noteData) {
         NoteDetailFragment fragment = new NoteDetailFragment();
         Bundle args = new Bundle();
@@ -65,6 +59,9 @@ public class NoteDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.fragment_note_detail, container, false);
         initView(layout);
+        if (noteData != null) {
+            setDataViews();
+        }
         initListeners();
 
         return layout;
@@ -135,19 +132,18 @@ public class NoteDetailFragment extends Fragment {
 
     private void initView(ViewGroup layout) {
         titleTextInput = layout.findViewById(R.id.inputTitle);
-        titleTextInput.setText(this.noteData.getTitle());
-
         descTextInput = layout.findViewById(R.id.inputDescription);
-        descTextInput.setText(this.noteData.getDescription());
-
         dateTextView = layout.findViewById(R.id.date);
-
         buttonSetTimeNow = layout.findViewById(R.id.button_set_now);
-        setCurrentDateOnView(noteData.getDateTime());
-
         if (isLandScape) {
             buttonSaveNote = layout.findViewById(R.id.button_save_note);
         }
+    }
+
+    private void setDataViews() {
+        titleTextInput.setText(this.noteData.getTitle());
+        descTextInput.setText(this.noteData.getDescription());
+        setCurrentDateOnView(noteData.getDateTime());
     }
 
     private void setCurrentDateOnView(Calendar calendar) {

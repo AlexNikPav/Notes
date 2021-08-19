@@ -24,5 +24,11 @@
         android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/action_clear"
+        android:icon="@android:drawable/ic_notification_clear_all"
+        android:orderInCategory="10"
+        android:title="@string/clear"
+        app:showAsAction="never" />
 </menu>
 

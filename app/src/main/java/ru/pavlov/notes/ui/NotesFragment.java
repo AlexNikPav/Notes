@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -47,6 +50,7 @@ public class NotesFragment extends Fragment {
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.fragment_notes, container, false);
         RecyclerView recyclerView = layout.findViewById(R.id.recycler_view_notes);
         initRecyclerView(recyclerView, notesSource);
+        setHasOptionsMenu(true);
 
         return layout;
     }
@@ -108,6 +112,37 @@ public class NotesFragment extends Fragment {
 
     private void showNoteDetailLand(int position) {
         navigation.addFragmentToRightArea(NoteDetailFragment.newInstance(notesSource.getNoteData(position)), false);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.card_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add:
+                if (isLandScape) {
+                    navigation.addFragmentToRightArea(NoteDetailFragment.newInstance(notesSource.getNewNoteData()), false);
+                } else {
+                    navigation.addFragmentToMainArea(NoteDetailFragment.newInstance(notesSource.getNewNoteData()), true);
+                }
+                publisher.clear();
+                publisher.subscribe(new Observer() {
+                    @Override
+                    public void updateCardData(NoteData noteData) {
+                        notesSource.addNoteData(noteData);
+                        noteItemsAdapter.notifyItemInserted(notesSource.size() - 1);
+                    }
+                });
+                return true;
+            case R.id.action_clear:
+                notesSource.clearNoteData();
+                noteItemsAdapter.notifyDataSetChanged();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

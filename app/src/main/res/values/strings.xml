@@ -27,4 +27,5 @@
     <string name="hintTitle">Заголовок</string>
     <string name="hintDesc">Описание</string>
     <string name="button_save_note">Сохранить</string>
+    <string name="clear">Clear</string>
 </resources>

@@ -54,4 +54,9 @@ public class NotesSourceArray implements NotesSource {
     public void clearNoteData() {
         dataSource.clear();
     }
+
+    public NoteData getNewNoteData() {
+        Calendar calendar = Calendar.getInstance();
+        return new NoteData(size(), "", "", calendar);
+    }
 }

@@ -12,4 +12,6 @@ public interface NotesSource {
     void addNoteData(NoteData cardData);
 
     void clearNoteData();
+
+    NoteData getNewNoteData();
 }
