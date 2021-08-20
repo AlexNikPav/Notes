@@ -22,7 +22,7 @@ public class Publisher {
 
     public void notifySingle(NoteData noteData) {
         for (Observer observer : observers) {
-            observer.updateCardData(noteData);
+            observer.updateNoteData(noteData);
         }
     }
 
