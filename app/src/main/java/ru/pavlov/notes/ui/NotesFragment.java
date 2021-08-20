@@ -137,6 +137,7 @@ public class NotesFragment extends Fragment {
                 } else {
                     navigation.addFragmentToMainArea(NoteDetailFragment.newInstance(notesSource.getNewNoteData()), true);
                 }
+
                 publisher.clear();
                 publisher.subscribe(new Observer() {
                     @Override
