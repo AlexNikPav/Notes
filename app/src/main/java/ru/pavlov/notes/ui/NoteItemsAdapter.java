@@ -34,14 +34,12 @@ public class NoteItemsAdapter extends RecyclerView.Adapter<NoteItemsAdapter.View
     public NoteItemsAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_note, viewGroup, false);
-        Log.d(TAG, "onCreateViewHolder");
         return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(NoteItemsAdapter.ViewHolder viewHolder, int i) {
         viewHolder.setData(dataSource.getNoteData(i));
-        Log.d(TAG, "onBindViewHolder");
     }
 
     @Override
@@ -72,10 +70,10 @@ public class NoteItemsAdapter extends RecyclerView.Adapter<NoteItemsAdapter.View
         private void initListeners() {
             title.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onClick(View view) {
                     if (itemClickHandler != null) {
                         menuPosition = getLayoutPosition();
-                        itemClickHandler.onItemClick(v, getAdapterPosition());
+                        itemClickHandler.onItemClick(view, getAdapterPosition());
                     }
                 }
             });

@@ -15,15 +15,14 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
-import ru.pavlov.notes.observe.Publisher;
+import ru.pavlov.notes.observe.SingleObservers;
 import ru.pavlov.notes.ui.NotesFragment;
 
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG_LOG = "tag_log";
-    private static final String KEY_CURRENT_NOTE = "key_current_note";
     private Navigation navigation;
-    private Publisher publisher = new Publisher();
+    private SingleObservers publisher = new SingleObservers();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         return navigation;
     }
 
-    public Publisher getPublisher() {
+    public SingleObservers getPublisher() {
         return publisher;
     }
 }

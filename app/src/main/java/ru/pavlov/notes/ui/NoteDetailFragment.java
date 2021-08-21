@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -23,14 +22,14 @@ import java.util.Locale;
 import ru.pavlov.notes.MainActivity;
 import ru.pavlov.notes.R;
 import ru.pavlov.notes.data.NoteData;
-import ru.pavlov.notes.observe.Publisher;
+import ru.pavlov.notes.observe.SingleObservers;
 
 public class NoteDetailFragment extends Fragment {
 
     private static final String KEY_NOTE = "note";
     private static final String DATE_FORMAT = "yyyy-MM-dd";
 
-    private Publisher publisher;
+    private SingleObservers publisher;
     private NoteData noteData;
     private TextInputEditText titleTextInput;
     private TextInputEditText descTextInput;
@@ -95,7 +94,7 @@ public class NoteDetailFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         if (!isLandScape) {
-            publisher.notifySingle(noteData);
+            publisher.notify(noteData);
         }
     }
 
@@ -115,7 +114,6 @@ public class NoteDetailFragment extends Fragment {
                     dateSetListener, dateOfNote.get(Calendar.YEAR), dateOfNote.get(Calendar.MONTH),
                     dateOfNote.get(Calendar.DAY_OF_MONTH));
 
-
             datePickerDialog.show();
         });
 
@@ -124,7 +122,7 @@ public class NoteDetailFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     collectCardData();
-                    publisher.notifySingle(noteData);
+                    publisher.notify(noteData);
                 }
             });
         }

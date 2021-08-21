@@ -36,22 +36,22 @@ public class NotesSourceArray implements NotesSource {
     }
 
     @Override
-    public void deleteNoteData(int position) {
+    public void delete(int position) {
         dataSource.remove(position);
     }
 
     @Override
-    public void updateNoteData(int position, NoteData cardData) {
+    public void update(int position, NoteData cardData) {
         dataSource.set(position, cardData);
     }
 
     @Override
-    public void addNoteData(NoteData cardData) {
+    public void add(NoteData cardData) {
         dataSource.add(cardData);
     }
 
     @Override
-    public void clearNoteData() {
+    public void clearAll() {
         dataSource.clear();
     }
 

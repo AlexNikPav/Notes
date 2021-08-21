@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,8 +24,8 @@ import ru.pavlov.notes.R;
 import ru.pavlov.notes.data.NotesSource;
 import ru.pavlov.notes.data.NotesSourceArray;
 import ru.pavlov.notes.data.NoteData;
-import ru.pavlov.notes.observe.Observer;
-import ru.pavlov.notes.observe.Publisher;
+import ru.pavlov.notes.observe.Subscriber;
+import ru.pavlov.notes.observe.SingleObservers;
 
 public class NotesFragment extends Fragment {
 
@@ -34,11 +33,11 @@ public class NotesFragment extends Fragment {
     private static final String KEY_NOTE = "note";
     boolean isLandScape;
     private Navigation navigation;
-    private Publisher publisher;
+    private SingleObservers publisher;
     private NotesSource notesSource;
     private NoteItemsAdapter noteItemsAdapter;
-
-    private boolean moveToLastPosition = false;
+    private RecyclerView recyclerView;
+    private boolean moveToLastPosition;
 
     public static NotesFragment newInstance() {
         return new NotesFragment();
@@ -52,26 +51,18 @@ public class NotesFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.fragment_notes, container, false);
-        RecyclerView recyclerView = layout.findViewById(R.id.recycler_view_notes);
+        recyclerView = layout.findViewById(R.id.recycler_view_notes);
         initRecyclerView(recyclerView, notesSource);
         setHasOptionsMenu(true);
 
         return layout;
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        MainActivity activity = (MainActivity) context;
-        navigation = activity.getNavigation();
-        publisher = activity.getPublisher();
-    }
-
-    private void initRecyclerView(RecyclerView recyclerView, NotesSource noteSource) {
+    private void initRecyclerView(RecyclerView recyclerView, NotesSource notesSource) {
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        noteItemsAdapter = new NoteItemsAdapter(noteSource, this);
+        noteItemsAdapter = new NoteItemsAdapter(notesSource, this);
         noteItemsAdapter.setOnItemClickHandler(new OnItemClickHandler() {
             @Override
             public void onItemClick(View view, int position) {
@@ -86,10 +77,19 @@ public class NotesFragment extends Fragment {
         recyclerView.setItemAnimator(animator);
 
         if (moveToLastPosition) {
-            recyclerView.smoothScrollToPosition(noteSource.size() - 1);
+            recyclerView.smoothScrollToPosition(notesSource.size() - 1);
             moveToLastPosition = false;
         }
     }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        MainActivity activity = (MainActivity) context;
+        navigation = activity.getNavigation();
+        publisher = activity.getPublisher();
+    }
+
 
     public void onSaveInstanceState(Bundle bundle) {
         super.onSaveInstanceState(bundle);
@@ -105,11 +105,10 @@ public class NotesFragment extends Fragment {
         } else {
             showNoteDetailPort(position);
         }
-        publisher.clear();
-        publisher.subscribe(new Observer() {
+        publisher.subscribe(new Subscriber() {
             @Override
-            public void updateNoteData(NoteData noteData) {
-                notesSource.updateNoteData(position, noteData);
+            public void handlerUpdateNoteData(NoteData noteData) {
+                notesSource.update(position, noteData);
                 noteItemsAdapter.notifyItemChanged(position);
             }
         });
@@ -124,11 +123,6 @@ public class NotesFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.card_menu, menu);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
@@ -138,23 +132,38 @@ public class NotesFragment extends Fragment {
                     navigation.addFragmentToMainArea(NoteDetailFragment.newInstance(notesSource.getNewNoteData()), true);
                 }
 
-                publisher.clear();
-                publisher.subscribe(new Observer() {
+                publisher.subscribe(new Subscriber() {
                     @Override
-                    public void updateNoteData(NoteData noteData) {
-                        notesSource.addNoteData(noteData);
-                        noteItemsAdapter.notifyItemInserted(notesSource.size() - 1);
-                        moveToLastPosition = true;
+                    public void handlerUpdateNoteData(NoteData noteData) {
+                        notesSource.add(noteData);
+                        int lastPosition = notesSource.size() - 1;
+                        noteItemsAdapter.notifyItemInserted(lastPosition);
+                        NotesFragment.this.moveToLastPosition = true;
+                        recyclerView.smoothScrollToPosition(lastPosition);
+                        if (isLandScape) {
+                            publisher.subscribe(new Subscriber() {
+                                @Override
+                                public void handlerUpdateNoteData(NoteData noteData) {
+                                    notesSource.update(lastPosition, noteData);
+                                    noteItemsAdapter.notifyItemChanged(lastPosition);
+                                }
+                            });
+                        }
                     }
                 });
                 return true;
             case R.id.action_clear:
-                notesSource.clearNoteData();
+                notesSource.clearAll();
                 noteItemsAdapter.notifyDataSetChanged();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
+    //    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        inflater.inflate(R.menu.card_menu, menu);
+//    }
 
     @Override
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
@@ -168,7 +177,7 @@ public class NotesFragment extends Fragment {
         final int position = noteItemsAdapter.getMenuPosition();
         switch (item.getItemId()) {
             case R.id.action_delete:
-                notesSource.deleteNoteData(position);
+                notesSource.delete(position);
                 noteItemsAdapter.notifyItemRemoved(position);
                 return true;
         }
