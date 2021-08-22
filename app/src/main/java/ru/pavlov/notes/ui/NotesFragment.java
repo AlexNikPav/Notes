@@ -26,9 +26,6 @@ import ru.pavlov.notes.observe.Subscriber;
 import ru.pavlov.notes.observe.SingleObservers;
 
 public class NotesFragment extends FragmentBase {
-
-    private static final int MY_DEFAULT_DURATION = 1000;
-    private static final String KEY_NOTE = "note";
     private Navigation navigation;
     private SingleObservers publisher;
     private NotesSource notesSource;

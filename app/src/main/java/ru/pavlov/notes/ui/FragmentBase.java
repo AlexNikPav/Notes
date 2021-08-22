@@ -7,6 +7,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 abstract class FragmentBase extends Fragment {
+    public static final String DATE_FORMAT = "yyyy-MM-dd";
+    public static final int MY_DEFAULT_DURATION = 1000;
+    public static final String BUNDLE_KEY_NOTE = "note";
+
     private boolean isLandScape;
     private boolean isPortrait;
 

@@ -23,10 +23,6 @@ import ru.pavlov.notes.data.NoteData;
 import ru.pavlov.notes.observe.SingleObservers;
 
 public class NoteDetailFragment extends FragmentBase {
-
-    private static final String KEY_NOTE = "note";
-    private static final String DATE_FORMAT = "yyyy-MM-dd";
-
     private SingleObservers publisher;
     private NoteData noteData;
     private TextInputEditText titleTextInput;
@@ -38,7 +34,7 @@ public class NoteDetailFragment extends FragmentBase {
     public static NoteDetailFragment newInstance(NoteData noteData) {
         NoteDetailFragment fragment = new NoteDetailFragment();
         Bundle args = new Bundle();
-        args.putParcelable(KEY_NOTE, noteData);
+        args.putParcelable(BUNDLE_KEY_NOTE, noteData);
         fragment.setArguments(args);
         return fragment;
     }
@@ -47,7 +43,7 @@ public class NoteDetailFragment extends FragmentBase {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            noteData = getArguments().getParcelable(KEY_NOTE);
+            noteData = getArguments().getParcelable(BUNDLE_KEY_NOTE);
         }
     }
 
