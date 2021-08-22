@@ -23,7 +23,7 @@ public class NotesSourceArray implements NotesSource {
         String[] descriptions = resources.getStringArray(R.array.description_array);
         for (int i = 0; i < descriptions.length; i++) {
             Calendar calendar = Calendar.getInstance();
-            dataSource.add(new NoteData(i + 1, titles[i], descriptions[i], calendar));
+            dataSource.add(new NoteData(titles[i], descriptions[i], calendar));
         }
         return this;
     }
@@ -58,6 +58,6 @@ public class NotesSourceArray implements NotesSource {
 
     public NoteData getNewNoteData() {
         Calendar calendar = Calendar.getInstance();
-        return new NoteData(size(), "", "", calendar);
+        return new NoteData("", "", calendar);
     }
 }

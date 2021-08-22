@@ -6,33 +6,27 @@ import android.os.Parcelable;
 import java.util.Calendar;
 
 public class NoteData implements Parcelable {
-    private int id;
+    private String id;
     private String title;
     private String description;
     private Long dateTime = null;
 
-    public Calendar getDateTime() {
-        Calendar calendar = Calendar.getInstance();
-        if (dateTime != null) {
-            calendar.setTimeInMillis(dateTime);
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(title);
+        dest.writeString(description);
+        if (dateTime == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeLong(dateTime);
         }
-        return calendar;
     }
 
-    public void setDateTime(Calendar calendar) {
-        this.dateTime = calendar.getTime().getTime();
-    }
-
-    public NoteData(int id, String title, String description, Calendar dateTime) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.dateTime = dateTime.getTime().getTime();
-    }
-
-    protected NoteData(Parcel in) {
-        title = in.readString();
-        description = in.readString();
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<NoteData> CREATOR = new Creator<NoteData>() {
@@ -46,6 +40,29 @@ public class NoteData implements Parcelable {
             return new NoteData[size];
         }
     };
+
+    public Calendar getDateTime() {
+        Calendar calendar = Calendar.getInstance();
+        if (dateTime != null) {
+            calendar.setTimeInMillis(dateTime);
+        }
+        return calendar;
+    }
+
+    public void setDateTime(Calendar calendar) {
+        this.dateTime = calendar.getTime().getTime();
+    }
+
+    public NoteData(String title, String description, Calendar dateTime) {
+        this.title = title;
+        this.description = description;
+        this.dateTime = dateTime.getTime().getTime();
+    }
+
+    protected NoteData(Parcel in) {
+        title = in.readString();
+        description = in.readString();
+    }
 
     public String getTitle() {
         return title;
@@ -63,18 +80,11 @@ public class NoteData implements Parcelable {
         this.description = description;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(description);
+    public void setId(String id) {
+        this.id = id;
     }
 }
