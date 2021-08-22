@@ -23,4 +23,9 @@
     <string name="button_set_now">Выбрать дату</string>
     <string name="about_app">О приложении</string>
     <string name="sort">Sorting</string>
+    <string name="delete">Delete</string>
+    <string name="hintTitle">Заголовок</string>
+    <string name="hintDesc">Описание</string>
+    <string name="button_save_note">Сохранить</string>
+    <string name="clear">Clear</string>
 </resources>

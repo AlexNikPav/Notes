@@ -6,23 +6,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import ru.pavlov.notes.R;
-import ru.pavlov.notes.data.CardsSource;
+import ru.pavlov.notes.data.NotesSource;
 import ru.pavlov.notes.data.NoteData;
 
 public class NoteItemsAdapter extends RecyclerView.Adapter<NoteItemsAdapter.ViewHolder> {
     private static final String DATE_FORMAT = "yyyy-MM-dd";
     private final static String TAG = "NoteItemsAdapter";
-    private CardsSource dataSource;
+    private final Fragment fragment;
+    private NotesSource dataSource;
     private OnItemClickHandler itemClickHandler;
+    private int menuPosition;
 
-    public NoteItemsAdapter(CardsSource dataSource) {
+    public NoteItemsAdapter(NotesSource dataSource, Fragment fragment) {
         this.dataSource = dataSource;
+        this.fragment = fragment;
     }
 
     @Override
@@ -35,7 +40,7 @@ public class NoteItemsAdapter extends RecyclerView.Adapter<NoteItemsAdapter.View
 
     @Override
     public void onBindViewHolder(NoteItemsAdapter.ViewHolder viewHolder, int i) {
-        viewHolder.setData(dataSource.getCardData(i));
+        viewHolder.setData(dataSource.getNoteData(i));
         Log.d(TAG, "onBindViewHolder");
     }
 
@@ -48,6 +53,10 @@ public class NoteItemsAdapter extends RecyclerView.Adapter<NoteItemsAdapter.View
         this.itemClickHandler = itemClickListener;
     }
 
+    public int getMenuPosition() {
+        return menuPosition;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView title;
@@ -57,6 +66,7 @@ public class NoteItemsAdapter extends RecyclerView.Adapter<NoteItemsAdapter.View
             super(itemView);
             this.initView(itemView);
             initListeners();
+            registerContextMenu(itemView);
         }
 
         private void initListeners() {
@@ -64,8 +74,17 @@ public class NoteItemsAdapter extends RecyclerView.Adapter<NoteItemsAdapter.View
                 @Override
                 public void onClick(View v) {
                     if (itemClickHandler != null) {
+                        menuPosition = getLayoutPosition();
                         itemClickHandler.onItemClick(v, getAdapterPosition());
                     }
+                }
+            });
+            title.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    menuPosition = getLayoutPosition();
+                    itemView.showContextMenu(10, 10);
+                    return true;
                 }
             });
         }
@@ -79,6 +98,19 @@ public class NoteItemsAdapter extends RecyclerView.Adapter<NoteItemsAdapter.View
             title.setText(note.getTitle());
             SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
             date.setText(formatter.format(note.getDateTime().getTime()));
+        }
+
+        private void registerContextMenu(@NonNull View itemView) {
+            if (fragment != null) {
+                itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        menuPosition = getLayoutPosition();
+                        return false;
+                    }
+                });
+                fragment.registerForContextMenu(itemView);
+            }
         }
     }
 }
