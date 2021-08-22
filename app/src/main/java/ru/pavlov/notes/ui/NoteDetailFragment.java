@@ -2,11 +2,9 @@ package ru.pavlov.notes.ui;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +22,7 @@ import ru.pavlov.notes.R;
 import ru.pavlov.notes.data.NoteData;
 import ru.pavlov.notes.observe.SingleObservers;
 
-public class NoteDetailFragment extends Fragment {
+public class NoteDetailFragment extends FragmentBase {
 
     private static final String KEY_NOTE = "note";
     private static final String DATE_FORMAT = "yyyy-MM-dd";
@@ -36,7 +34,6 @@ public class NoteDetailFragment extends Fragment {
     private TextView dateTextView;
     private AppCompatButton buttonSetTimeNow;
     private AppCompatButton buttonSaveNote;
-    private boolean isLandScape;
 
     public static NoteDetailFragment newInstance(NoteData noteData) {
         NoteDetailFragment fragment = new NoteDetailFragment();
@@ -52,7 +49,6 @@ public class NoteDetailFragment extends Fragment {
         if (getArguments() != null) {
             noteData = getArguments().getParcelable(KEY_NOTE);
         }
-        isLandScape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -93,7 +89,7 @@ public class NoteDetailFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (!isLandScape) {
+        if (!isLandScape()) {
             publisher.notify(noteData);
         }
     }
@@ -117,7 +113,7 @@ public class NoteDetailFragment extends Fragment {
             datePickerDialog.show();
         });
 
-        if (isLandScape) {
+        if (isLandScape()) {
             buttonSaveNote.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -133,7 +129,7 @@ public class NoteDetailFragment extends Fragment {
         descTextInput = layout.findViewById(R.id.inputDescription);
         dateTextView = layout.findViewById(R.id.date);
         buttonSetTimeNow = layout.findViewById(R.id.button_set_now);
-        if (isLandScape) {
+        if (isLandScape()) {
             buttonSaveNote = layout.findViewById(R.id.button_save_note);
         }
     }
