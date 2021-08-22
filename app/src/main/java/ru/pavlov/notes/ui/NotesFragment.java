@@ -33,6 +33,7 @@ public class NotesFragment extends FragmentBase {
     private NoteItemsAdapter noteItemsAdapter;
     private RecyclerView recyclerView;
     private boolean moveToLastPosition;
+    private int positionShowNoteDetail;
 
     public static NotesFragment newInstance() {
         return new NotesFragment();
@@ -109,6 +110,15 @@ public class NotesFragment extends FragmentBase {
                 noteItemsAdapter.notifyItemChanged(position);
             }
         });
+        setPositionShowNoteDetail(position);
+    }
+
+    private void setPositionShowNoteDetail(int position) {
+        this.positionShowNoteDetail = position;
+    }
+
+    private int getPositionShowNoteDetail() {
+        return this.positionShowNoteDetail;
     }
 
     private void showNoteDetailPort(int position) {
@@ -152,6 +162,7 @@ public class NotesFragment extends FragmentBase {
             case R.id.action_clear:
                 notesSource.clearAll();
                 noteItemsAdapter.notifyDataSetChanged();
+                navigation.clearFragmentToRightArea();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -174,6 +185,9 @@ public class NotesFragment extends FragmentBase {
         final int position = noteItemsAdapter.getMenuPosition();
         switch (item.getItemId()) {
             case R.id.action_delete:
+                if (getPositionShowNoteDetail() == position) {
+                    navigation.clearFragmentToRightArea();
+                }
                 notesSource.delete(position);
                 noteItemsAdapter.notifyItemRemoved(position);
                 return true;
