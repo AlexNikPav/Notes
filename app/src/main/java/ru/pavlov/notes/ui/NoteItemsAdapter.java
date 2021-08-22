@@ -1,6 +1,5 @@
 package ru.pavlov.notes.ui;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +20,12 @@ public class NoteItemsAdapter extends RecyclerView.Adapter<NoteItemsAdapter.View
     private static final String DATE_FORMAT = "yyyy-MM-dd";
     private final static String TAG = "NoteItemsAdapter";
     private final Fragment fragment;
-    private NotesSource dataSource;
+    private NotesSource notesSource;
     private OnItemClickHandler itemClickHandler;
     private int menuPosition;
 
     public NoteItemsAdapter(NotesSource dataSource, Fragment fragment) {
-        this.dataSource = dataSource;
+        this.notesSource = dataSource;
         this.fragment = fragment;
     }
 
@@ -39,12 +38,12 @@ public class NoteItemsAdapter extends RecyclerView.Adapter<NoteItemsAdapter.View
 
     @Override
     public void onBindViewHolder(NoteItemsAdapter.ViewHolder viewHolder, int i) {
-        viewHolder.setData(dataSource.getNoteData(i));
+        viewHolder.setData(notesSource.getNoteData(i));
     }
 
     @Override
     public int getItemCount() {
-        return dataSource.size();
+        return notesSource.size();
     }
 
     public void setOnItemClickHandler(OnItemClickHandler itemClickListener) {
@@ -53,6 +52,11 @@ public class NoteItemsAdapter extends RecyclerView.Adapter<NoteItemsAdapter.View
 
     public int getMenuPosition() {
         return menuPosition;
+    }
+
+    public void setNotesSource(NotesSource notesSource) {
+        this.notesSource = notesSource;
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

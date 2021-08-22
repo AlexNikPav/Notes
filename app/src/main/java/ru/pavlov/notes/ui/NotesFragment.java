@@ -23,6 +23,8 @@ import ru.pavlov.notes.R;
 import ru.pavlov.notes.data.NotesSource;
 import ru.pavlov.notes.data.NotesSourceArray;
 import ru.pavlov.notes.data.NoteData;
+import ru.pavlov.notes.data.NotesSourceFireBase;
+import ru.pavlov.notes.data.NotesSourceResponse;
 import ru.pavlov.notes.observe.Subscriber;
 import ru.pavlov.notes.observe.SingleObservers;
 
@@ -41,12 +43,18 @@ public class NotesFragment extends FragmentBase {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        notesSource = new NotesSourceArray(getResources()).init();
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.fragment_notes, container, false);
         recyclerView = layout.findViewById(R.id.recycler_view_notes);
+        notesSource = new NotesSourceFireBase().init(new NotesSourceResponse() {
+            @Override
+            public void initialized(NotesSource notesSource) {
+                NotesFragment.this.noteItemsAdapter.notifyDataSetChanged();
+            }
+        });
+
         initRecyclerView(recyclerView, notesSource);
         setHasOptionsMenu(true);
 
