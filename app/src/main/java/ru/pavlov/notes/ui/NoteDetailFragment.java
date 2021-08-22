@@ -24,7 +24,7 @@ import ru.pavlov.notes.observe.SingleObservers;
 
 public class NoteDetailFragment extends FragmentBase {
     private SingleObservers publisher;
-    private NoteData noteData;
+    private NoteData noteData = null;
     private TextInputEditText titleTextInput;
     private TextInputEditText descTextInput;
     private TextView dateTextView;

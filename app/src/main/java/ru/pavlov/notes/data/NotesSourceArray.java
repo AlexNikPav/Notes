@@ -9,7 +9,7 @@ import java.util.List;
 
 import ru.pavlov.notes.R;
 
-public class NotesSourceArray implements NotesSource {
+public class NotesSourceArray extends NotesSourceBase {
     private List<NoteData> dataSource;
     private Resources resources;
 
@@ -56,8 +56,4 @@ public class NotesSourceArray implements NotesSource {
         dataSource.clear();
     }
 
-    public NoteData getNewNoteData() {
-        Calendar calendar = Calendar.getInstance();
-        return new NoteData("", "", calendar);
-    }
 }

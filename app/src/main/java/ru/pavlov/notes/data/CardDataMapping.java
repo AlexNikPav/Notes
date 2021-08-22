@@ -1,6 +1,7 @@
 package ru.pavlov.notes.data;
 
-import java.sql.Timestamp;
+import com.google.firebase.Timestamp;
+
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,9 +15,9 @@ public class CardDataMapping {
     }
 
     public static NoteData toCardData(String id, Map<String, Object> doc) {
-        Timestamp timeStamp = (Timestamp) doc.get(Fields.DATE);
+//        Timestamp timeStamp = (Timestamp) doc.get(Fields.DATE);
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(timeStamp.getTime());
+//        calendar.setTime(timeStamp.toDate());
         NoteData noteData = new NoteData((String) doc.get(Fields.TITLE), (String) doc.get(Fields.DESCRIPTION), calendar);
         noteData.setId(id);
 
@@ -27,7 +28,7 @@ public class CardDataMapping {
         Map<String, Object> noteData = new HashMap<>();
         noteData.put(Fields.TITLE, cardData.getTitle());
         noteData.put(Fields.DESCRIPTION, cardData.getDescription());
-        noteData.put(Fields.DATE, cardData.getDateTime());
+//        noteData.put(Fields.DATE, cardData.getDateTime());
         return noteData;
     }
 

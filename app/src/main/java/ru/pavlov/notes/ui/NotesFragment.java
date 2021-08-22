@@ -154,8 +154,8 @@ public class NotesFragment extends FragmentBase {
                         int lastPosition = notesSource.size() - 1;
                         noteItemsAdapter.notifyItemInserted(lastPosition);
                         NotesFragment.this.moveToLastPosition = true;
-                        recyclerView.smoothScrollToPosition(lastPosition);
                         if (isLandScape()) {
+                            recyclerView.smoothScrollToPosition(lastPosition);
                             publisher.subscribe(new Subscriber() {
                                 @Override
                                 public void handlerUpdateNoteData(NoteData noteData) {

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class NotesSourceFireBase implements NotesSource {
+public class NotesSourceFireBase extends NotesSourceBase {
     private static final String CARDS_COLLECTION = "cards";
     private static final String TAG = "[CardsSourceFirebaseImpl]";
     private List<NoteData> dataSource;
@@ -88,13 +88,13 @@ public class NotesSourceFireBase implements NotesSource {
     }
 
     @Override
-    public void add(final NoteData cardData) {
+    public void add(final NoteData noteData) {
         // Добавить документ
-        collection.add(CardDataMapping.toDocument(cardData))
+        collection.add(CardDataMapping.toDocument(noteData))
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        cardData.setId(documentReference.getId());
+                        noteData.setId(documentReference.getId());
                     }
                 });
     }
@@ -106,10 +106,4 @@ public class NotesSourceFireBase implements NotesSource {
         }
         dataSource = new ArrayList<NoteData>();
     }
-
-    @Override
-    public NoteData getNewNoteData() {
-        return null;
-    }
-
 }
