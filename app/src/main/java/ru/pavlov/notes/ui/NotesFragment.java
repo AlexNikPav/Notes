@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -93,6 +94,9 @@ public class NotesFragment extends FragmentBase {
     }
 
     private void showNoteDetail(int position) {
+        if (position < 0) {
+            return;
+        }
         if (isLandScape()) {
             showNoteDetailLand(position);
         } else {

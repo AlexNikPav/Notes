@@ -1,6 +1,7 @@
 package ru.pavlov.notes.data;
 
 import android.content.res.Resources;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
