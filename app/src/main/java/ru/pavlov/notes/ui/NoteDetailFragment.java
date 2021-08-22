@@ -48,7 +48,7 @@ public class NoteDetailFragment extends FragmentBase {
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.fragment_note_detail, container, false);
+        View layout = (View) inflater.inflate(R.layout.fragment_note_detail, container, false);
         initView(layout);
         if (noteData != null) {
             setDataViews();
@@ -120,7 +120,7 @@ public class NoteDetailFragment extends FragmentBase {
         }
     }
 
-    private void initView(ViewGroup layout) {
+    private void initView(View layout) {
         titleTextInput = layout.findViewById(R.id.inputTitle);
         descTextInput = layout.findViewById(R.id.inputDescription);
         dateTextView = layout.findViewById(R.id.date);
