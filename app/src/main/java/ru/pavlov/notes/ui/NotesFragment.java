@@ -1,12 +1,10 @@
 package ru.pavlov.notes.ui;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,11 +25,10 @@ import ru.pavlov.notes.data.NoteData;
 import ru.pavlov.notes.observe.Subscriber;
 import ru.pavlov.notes.observe.SingleObservers;
 
-public class NotesFragment extends Fragment {
+public class NotesFragment extends FragmentBase {
 
     private static final int MY_DEFAULT_DURATION = 1000;
     private static final String KEY_NOTE = "note";
-    boolean isLandScape;
     private Navigation navigation;
     private SingleObservers publisher;
     private NotesSource notesSource;
@@ -45,7 +42,6 @@ public class NotesFragment extends Fragment {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        isLandScape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         notesSource = new NotesSourceArray(getResources()).init();
     }
 
@@ -100,7 +96,7 @@ public class NotesFragment extends Fragment {
     }
 
     private void showNoteDetail(int position) {
-        if (isLandScape) {
+        if (isLandScape()) {
             showNoteDetailLand(position);
         } else {
             showNoteDetailPort(position);
@@ -126,7 +122,7 @@ public class NotesFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
-                if (isLandScape) {
+                if (isLandScape()) {
                     navigation.addFragmentToRightArea(NoteDetailFragment.newInstance(notesSource.getNewNoteData()), false);
                 } else {
                     navigation.addFragmentToMainArea(NoteDetailFragment.newInstance(notesSource.getNewNoteData()), true);
@@ -140,7 +136,7 @@ public class NotesFragment extends Fragment {
                         noteItemsAdapter.notifyItemInserted(lastPosition);
                         NotesFragment.this.moveToLastPosition = true;
                         recyclerView.smoothScrollToPosition(lastPosition);
-                        if (isLandScape) {
+                        if (isLandScape()) {
                             publisher.subscribe(new Subscriber() {
                                 @Override
                                 public void handlerUpdateNoteData(NoteData noteData) {
