@@ -5,13 +5,13 @@ public interface NotesSource {
 
     int size();
 
-    void deleteNoteData(int position);
+    void delete(int position);
 
-    void updateNoteData(int position, NoteData cardData);
+    void update(int position, NoteData cardData);
 
-    void addNoteData(NoteData cardData);
+    void add(NoteData cardData);
 
-    void clearNoteData();
+    void clearAll();
 
     NoteData getNewNoteData();
 }

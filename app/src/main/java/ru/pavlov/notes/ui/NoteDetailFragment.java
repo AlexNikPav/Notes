@@ -2,16 +2,13 @@ package ru.pavlov.notes.ui;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -23,26 +20,21 @@ import java.util.Locale;
 import ru.pavlov.notes.MainActivity;
 import ru.pavlov.notes.R;
 import ru.pavlov.notes.data.NoteData;
-import ru.pavlov.notes.observe.Publisher;
+import ru.pavlov.notes.observe.SingleObservers;
 
-public class NoteDetailFragment extends Fragment {
-
-    private static final String KEY_NOTE = "note";
-    private static final String DATE_FORMAT = "yyyy-MM-dd";
-
-    private Publisher publisher;
+public class NoteDetailFragment extends FragmentBase {
+    private SingleObservers publisher;
     private NoteData noteData;
     private TextInputEditText titleTextInput;
     private TextInputEditText descTextInput;
     private TextView dateTextView;
     private AppCompatButton buttonSetTimeNow;
     private AppCompatButton buttonSaveNote;
-    private boolean isLandScape;
 
     public static NoteDetailFragment newInstance(NoteData noteData) {
         NoteDetailFragment fragment = new NoteDetailFragment();
         Bundle args = new Bundle();
-        args.putParcelable(KEY_NOTE, noteData);
+        args.putParcelable(BUNDLE_KEY_NOTE, noteData);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,13 +43,12 @@ public class NoteDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            noteData = getArguments().getParcelable(KEY_NOTE);
+            noteData = getArguments().getParcelable(BUNDLE_KEY_NOTE);
         }
-        isLandScape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.fragment_note_detail, container, false);
+        View layout = (View) inflater.inflate(R.layout.fragment_note_detail, container, false);
         initView(layout);
         if (noteData != null) {
             setDataViews();
@@ -94,8 +85,8 @@ public class NoteDetailFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (!isLandScape) {
-            publisher.notifySingle(noteData);
+        if (!isLandScape()) {
+            publisher.notify(noteData);
         }
     }
 
@@ -115,27 +106,26 @@ public class NoteDetailFragment extends Fragment {
                     dateSetListener, dateOfNote.get(Calendar.YEAR), dateOfNote.get(Calendar.MONTH),
                     dateOfNote.get(Calendar.DAY_OF_MONTH));
 
-
             datePickerDialog.show();
         });
 
-        if (isLandScape) {
+        if (isLandScape()) {
             buttonSaveNote.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     collectCardData();
-                    publisher.notifySingle(noteData);
+                    publisher.notify(noteData);
                 }
             });
         }
     }
 
-    private void initView(ViewGroup layout) {
+    private void initView(View layout) {
         titleTextInput = layout.findViewById(R.id.inputTitle);
         descTextInput = layout.findViewById(R.id.inputDescription);
         dateTextView = layout.findViewById(R.id.date);
         buttonSetTimeNow = layout.findViewById(R.id.button_set_now);
-        if (isLandScape) {
+        if (isLandScape()) {
             buttonSaveNote = layout.findViewById(R.id.button_save_note);
         }
     }

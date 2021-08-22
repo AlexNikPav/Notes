@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 public class Navigation {
     private final FragmentManager fragmentManager;
+    private Fragment currentNoteDetailFragment;
 
     public Navigation(FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
@@ -26,5 +27,14 @@ public class Navigation {
 
     public void addFragmentToRightArea(Fragment fragment, boolean useBackStack) {
         addFragment(R.id.note_detail_container, fragment, useBackStack);
+        currentNoteDetailFragment = fragment;
+    }
+
+    public void clearFragmentToRightArea() {
+        if (currentNoteDetailFragment != null) {
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.remove(currentNoteDetailFragment);
+            fragmentTransaction.commit();
+        }
     }
 }
